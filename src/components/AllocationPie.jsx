@@ -28,7 +28,11 @@ export default function AllocationPie({ data }) {
 
           <Box ml={3}>
             {data.map((item) => {
-              const percent = ((item.value / total) * 100).toFixed(1)
+              const percent =
+                total > 0 && item.value != null
+                  ? ((item.value / total) * 100).toFixed(1)
+                  : '0.0'
+
 
               return (
                 <Box

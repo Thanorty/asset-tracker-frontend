@@ -33,7 +33,7 @@ export default function DashboardPage() {
         <Grid item xs={12} md={4}>
           <SummaryCard
             title="Monthly Expenses"
-            value={`$${data.monthlyExpenses.toFixed(2)}`}
+            value={`$${(data.monthlyExpenses ?? 0).toFixed(2)}`}
             positive={false}
           />
         </Grid>

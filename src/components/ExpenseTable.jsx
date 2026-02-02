@@ -34,7 +34,7 @@ export default function ExpenseTable({ expenses }) {
                 <TableCell>{expense.category}</TableCell>
                 <TableCell>{expense.description}</TableCell>
                 <TableCell align="right">
-                  {expense.amount.toFixed(2)}
+                  {(expense.amount ?? 0).toFixed(2)}
                 </TableCell>
               </TableRow>
             ))}
