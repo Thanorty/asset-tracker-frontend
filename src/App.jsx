@@ -6,6 +6,7 @@ import MainLayout from './layouts/MainLayout'
 import ProtectedRoute from './components/ProtectedRoute'
 
 const LoginPage = lazy(() => import('./pages/LoginPage'))
+const SignUpPage = lazy(() => import('./pages/SignUpPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage'))
 const ExpensesPage = lazy(() => import('./pages/ExpensesPage'))
@@ -24,6 +25,7 @@ export default function App() {
       <Suspense fallback={<PageLoader />}>
         <Routes>
           <Route path="/login" element={<LoginPage />} />
+          <Route path="/signup" element={<SignUpPage />} />
 
           <Route element={<ProtectedRoute />}>
             <Route element={<MainLayout />}>

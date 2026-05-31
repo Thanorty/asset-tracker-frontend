@@ -2,6 +2,18 @@
 
 All notable changes to the Asset Tracker Frontend are documented here.
 
+## [1.1.0] - 2026-05-31
+
+### Added
+
+- **Sign-up page** (`/signup`)
+  - Registration form with name, email, password, and confirm-password fields
+  - Client-side validation (password match, minimum length)
+  - Posts to `POST /auth/register` API endpoint
+  - Redirects to login page with success banner after registration
+  - Navigation links between login and sign-up pages
+  - `registerUser` API function in `authApi.js`
+
 ## [1.0.0] - 2026-05-31
 
 ### Added

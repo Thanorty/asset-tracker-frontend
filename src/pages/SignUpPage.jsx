@@ -1,4 +1,4 @@
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined'
+import PersonAddAltIcon from '@mui/icons-material/PersonAddAlt'
 import {
   Alert,
   Avatar,
@@ -13,22 +13,19 @@ import {
   Typography,
 } from '@mui/material'
 import { useState } from 'react'
-import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import { useAuth } from '../context/useAuth'
+import { registerUser } from '../api/authApi'
 
-export default function LoginPage() {
-  const { login, isAuthenticated } = useAuth()
+export default function SignUpPage() {
+  const { isAuthenticated } = useAuth()
   const navigate = useNavigate()
-  const location = useLocation()
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ name: '', email: '', password: '', confirmPassword: '' })
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const from = location.state?.from?.pathname || '/'
-  const justRegistered = location.state?.registered === true
-
   if (isAuthenticated) {
-    return <Navigate to={from} replace />
+    return <Navigate to="/" replace />
   }
 
   const handleChange = (event) => {
@@ -42,15 +39,30 @@ export default function LoginPage() {
   const handleSubmit = async (event) => {
     event.preventDefault()
     setError('')
+
+    if (form.password !== form.confirmPassword) {
+      setError('Passwords do not match.')
+      return
+    }
+
+    if (form.password.length < 6) {
+      setError('Password must be at least 6 characters.')
+      return
+    }
+
     setIsSubmitting(true)
 
     try {
-      await login(form)
-      navigate(from, { replace: true })
-    } catch (loginError) {
+      await registerUser({
+        name: form.name,
+        email: form.email,
+        password: form.password,
+      })
+      navigate('/login', { state: { registered: true } })
+    } catch (registerError) {
       setError(
-        loginError?.response?.data?.message ||
-          'Unable to login. Please check your credentials and try again.'
+        registerError?.response?.data?.message ||
+          'Registration failed. Please try again.'
       )
     } finally {
       setIsSubmitting(false)
@@ -70,22 +82,25 @@ export default function LoginPage() {
         <CardContent sx={{ p: 3 }}>
           <Stack spacing={2.5} component="form" onSubmit={handleSubmit}>
             <Stack spacing={1} alignItems="center" textAlign="center">
-              <Avatar sx={{ bgcolor: 'primary.main' }}>
-                <LockOutlinedIcon fontSize="small" />
+              <Avatar sx={{ bgcolor: 'secondary.main' }}>
+                <PersonAddAltIcon fontSize="small" />
               </Avatar>
-              <Typography variant="h5">Welcome back</Typography>
+              <Typography variant="h5">Create an account</Typography>
               <Typography variant="body2" color="text.secondary">
-                Sign in to access your portfolio dashboard.
+                Sign up to start tracking your portfolio.
               </Typography>
             </Stack>
 
-            {justRegistered && (
-              <Alert severity="success">
-                Account created! Please log in with your new credentials.
-              </Alert>
-            )}
-
             {error && <Alert severity="error">{error}</Alert>}
+
+            <TextField
+              label="Full Name"
+              name="name"
+              value={form.name}
+              onChange={handleChange}
+              required
+              autoFocus
+            />
 
             <TextField
               label="Email"
@@ -94,7 +109,6 @@ export default function LoginPage() {
               value={form.email}
               onChange={handleChange}
               required
-              autoFocus
             />
 
             <TextField
@@ -106,14 +120,23 @@ export default function LoginPage() {
               required
             />
 
+            <TextField
+              label="Confirm Password"
+              name="confirmPassword"
+              type="password"
+              value={form.confirmPassword}
+              onChange={handleChange}
+              required
+            />
+
             <Button type="submit" variant="contained" size="large" disabled={isSubmitting}>
-              {isSubmitting ? <CircularProgress size={20} color="inherit" /> : 'Login'}
+              {isSubmitting ? <CircularProgress size={20} color="inherit" /> : 'Sign Up'}
             </Button>
 
             <Typography variant="body2" textAlign="center" color="text.secondary">
-              Don&apos;t have an account?{' '}
-              <MuiLink component={Link} to="/signup" underline="hover">
-                Sign up
+              Already have an account?{' '}
+              <MuiLink component={Link} to="/login" underline="hover">
+                Log in
               </MuiLink>
             </Typography>
           </Stack>
@@ -122,3 +145,4 @@ export default function LoginPage() {
     </Box>
   )
 }
+
