@@ -1,15 +1,18 @@
 import AddIcon from '@mui/icons-material/Add'
 import RefreshIcon from '@mui/icons-material/Refresh'
+import SyncIcon from '@mui/icons-material/Sync'
 import { Alert, Box, Button, CircularProgress, Stack, Typography } from '@mui/material'
 import { useState } from 'react'
 import PortfolioTable from '../components/PortfolioTable'
 import AddAssetDialog from '../components/AddAssetDialog'
 import { usePortfolio } from '../hooks/usePortfolio'
 import { useNotification } from '../context/useNotification'
+import { refreshPrices } from '../api/pricingApi'
 
 export default function PortfolioPage() {
   const { assets, loading, error, retry, addAsset, removeAsset } = usePortfolio()
   const [open, setOpen] = useState(false)
+  const [refreshing, setRefreshing] = useState(false)
   const notify = useNotification()
 
   const handleSave = async (asset) => {
@@ -27,6 +30,19 @@ export default function PortfolioPage() {
       notify('Asset deleted.')
     } catch (err) {
       notify(err?.response?.data?.message || 'Failed to delete asset.', 'error')
+    }
+  }
+
+  const handleRefreshPrices = async () => {
+    setRefreshing(true)
+    try {
+      const res = await refreshPrices()
+      notify(`Prices updated: ${res.data.updated} assets refreshed`)
+      retry()
+    } catch (err) {
+      notify(err?.response?.data?.message || 'Failed to refresh prices.', 'error')
+    } finally {
+      setRefreshing(false)
     }
   }
 
@@ -49,13 +65,23 @@ export default function PortfolioPage() {
           </Typography>
         </Stack>
 
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-          onClick={() => setOpen(true)}
-        >
-          Add Asset
-        </Button>
+        <Stack direction="row" spacing={1}>
+          <Button
+            variant="outlined"
+            startIcon={refreshing ? <CircularProgress size={18} /> : <SyncIcon />}
+            onClick={handleRefreshPrices}
+            disabled={refreshing}
+          >
+            {refreshing ? 'Updating…' : 'Refresh Prices'}
+          </Button>
+          <Button
+            variant="contained"
+            startIcon={<AddIcon />}
+            onClick={() => setOpen(true)}
+          >
+            Add Asset
+          </Button>
+        </Stack>
       </Box>
 
       {loading && (

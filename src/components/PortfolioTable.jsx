@@ -36,9 +36,12 @@ function getComparator(order, orderBy) {
 
 const headCells = [
   { id: 'name', label: 'Asset' },
+  { id: 'symbol', label: 'Symbol' },
   { id: 'type', label: 'Type' },
   { id: 'quantity', label: 'Quantity', numeric: true },
-  { id: 'currentValue', label: 'Value (RM)', numeric: true },
+  { id: 'unitPrice', label: 'Unit Price', numeric: true },
+  { id: 'currentValue', label: 'Total Value', numeric: true },
+  { id: 'lastPriceUpdate', label: 'Updated', numeric: false },
 ]
 
 export default function PortfolioTable({ assets, onDelete }) {
@@ -59,6 +62,23 @@ export default function PortfolioTable({ assets, onDelete }) {
   )
 
   const paged = sorted.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+
+  const formatCurrency = (value, currency) => {
+    if (value == null) return '—'
+    const symbol = currency === 'MYR' ? 'RM' : '$'
+    return `${symbol}${Number(value).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`
+  }
+
+  const timeAgo = (dateStr) => {
+    if (!dateStr) return '—'
+    const diff = Date.now() - new Date(dateStr).getTime()
+    const mins = Math.floor(diff / 60000)
+    if (mins < 1) return 'Just now'
+    if (mins < 60) return `${mins}m ago`
+    const hrs = Math.floor(mins / 60)
+    if (hrs < 24) return `${hrs}h ago`
+    return `${Math.floor(hrs / 24)}d ago`
+  }
 
   return (
     <Card>
@@ -94,7 +114,7 @@ export default function PortfolioTable({ assets, onDelete }) {
             <TableBody>
               {assets.length === 0 && (
                 <TableRow>
-                  <TableCell colSpan={5} align="center" sx={{ py: 5 }}>
+                  <TableCell colSpan={headCells.length + 1} align="center" sx={{ py: 5 }}>
                     <Typography color="text.secondary">
                       No assets yet. Add your first asset to get started.
                     </Typography>
@@ -106,11 +126,24 @@ export default function PortfolioTable({ assets, onDelete }) {
                 <TableRow key={asset.id} hover>
                   <TableCell sx={{ fontWeight: 600 }}>{asset.name}</TableCell>
                   <TableCell>
+                    <Typography variant="body2" color="text.secondary">
+                      {asset.symbol || '—'}
+                    </Typography>
+                  </TableCell>
+                  <TableCell>
                     <Chip size="small" label={asset.type} color="primary" variant="outlined" />
                   </TableCell>
                   <TableCell align="right">{asset.quantity}</TableCell>
+                  <TableCell align="right">
+                    {formatCurrency(asset.unitPrice, asset.currency)}
+                  </TableCell>
                   <TableCell align="right" sx={{ fontWeight: 700 }}>
-                    {Number(asset.currentValue ?? asset.value ?? 0).toLocaleString()}
+                    {formatCurrency(asset.currentValue, asset.currency)}
+                  </TableCell>
+                  <TableCell>
+                    <Typography variant="caption" color="text.secondary">
+                      {timeAgo(asset.lastPriceUpdate)}
+                    </Typography>
                   </TableCell>
                   {onDelete && (
                     <TableCell align="center">
