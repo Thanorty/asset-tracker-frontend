@@ -7,3 +7,7 @@ export const fetchAssets = () => {
 export const createAsset = (asset) => {
   return apiClient.post('/assets', asset)
 }
+
+export const deleteAsset = (id) => {
+  return apiClient.delete(`/assets/${id}`)
+}

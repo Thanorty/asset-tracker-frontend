@@ -7,3 +7,7 @@ export const fetchExpenses = () => {
 export const createExpense = (expense) => {
   return apiClient.post('/expenses', expense)
 }
+
+export const deleteExpense = (id) => {
+  return apiClient.delete(`/expenses/${id}`)
+}

@@ -1,20 +1,41 @@
-import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import DashboardPage from './pages/DashboardPage'
-import PortfolioPage from './pages/PortfolioPage'
-import ExpensesPage from './pages/ExpensesPage'
+import { lazy, Suspense } from 'react'
+import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom'
+import { Box, CircularProgress } from '@mui/material'
 
 import MainLayout from './layouts/MainLayout'
+import ProtectedRoute from './components/ProtectedRoute'
+
+const LoginPage = lazy(() => import('./pages/LoginPage'))
+const DashboardPage = lazy(() => import('./pages/DashboardPage'))
+const PortfolioPage = lazy(() => import('./pages/PortfolioPage'))
+const ExpensesPage = lazy(() => import('./pages/ExpensesPage'))
+
+function PageLoader() {
+  return (
+    <Box sx={{ display: 'flex', justifyContent: 'center', py: 10 }}>
+      <CircularProgress />
+    </Box>
+  )
+}
 
 export default function App() {
   return (
     <BrowserRouter>
-      <Routes>
-        <Route element={<MainLayout />}>
-          <Route path="/" element={<DashboardPage />} />
-          <Route path="/portfolio" element={<PortfolioPage />} />
-          <Route path="/expenses" element={<ExpensesPage />} />
-        </Route>
-      </Routes>
+      <Suspense fallback={<PageLoader />}>
+        <Routes>
+          <Route path="/login" element={<LoginPage />} />
+
+          <Route element={<ProtectedRoute />}>
+            <Route element={<MainLayout />}>
+              <Route path="/" element={<DashboardPage />} />
+              <Route path="/portfolio" element={<PortfolioPage />} />
+              <Route path="/expenses" element={<ExpensesPage />} />
+            </Route>
+          </Route>
+
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </Suspense>
     </BrowserRouter>
   )
 }

@@ -1,32 +1,52 @@
-import { Grid, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
+import RefreshIcon from '@mui/icons-material/Refresh'
+import { Alert, Box, Button, CircularProgress, Grid, Stack, Typography } from '@mui/material'
 import SummaryCard from '../components/SummaryCard'
 import AllocationPie from '../components/AllocationPie'
 import ExpensePie from '../components/ExpensePie'
-import { fetchDashboardSummary } from '../api/dashboardApi'
+import { useDashboard } from '../hooks/useDashboard'
 
 export default function DashboardPage() {
-  const [data, setData] = useState(null)
+  const { data, loading, error, retry } = useDashboard()
 
-  useEffect(() => {
-    fetchDashboardSummary(2026, 1)
-      .then((res) => setData(res.data))
-      .catch(console.error)
-  }, [])
+  if (loading) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', py: 8 }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
 
-  if (!data) return <Typography>Loading...</Typography>
+  if (error) {
+    return (
+      <Box sx={{ py: 6, textAlign: 'center' }}>
+        <Alert severity="error" sx={{ mb: 2, justifyContent: 'center' }}>
+          {error}
+        </Alert>
+        <Button variant="outlined" startIcon={<RefreshIcon />} onClick={retry}>
+          Retry
+        </Button>
+      </Box>
+    )
+  }
+
+  if (!data) return null
 
   return (
     <>
-      <Typography variant="h4" gutterBottom>
-        Dashboard
-      </Typography>
+      <Stack spacing={0.5} sx={{ mb: 3 }}>
+        <Typography variant="h4">Dashboard</Typography>
+        <Typography color="text.secondary">
+          Track your portfolio performance and spending at a glance.
+        </Typography>
+      </Stack>
 
       <Grid container spacing={3}>
         <Grid item xs={12} md={4}>
           <SummaryCard
             title="Total Portfolio Value"
             value={`$${data.totalPortfolioValue.toLocaleString()}`}
+            subtitle="Across all tracked assets"
+            positive
           />
         </Grid>
 
@@ -35,6 +55,15 @@ export default function DashboardPage() {
             title="Monthly Expenses"
             value={`$${(data.monthlyExpenses ?? 0).toFixed(2)}`}
             positive={false}
+            subtitle="Current month burn rate"
+          />
+        </Grid>
+
+        <Grid item xs={12} md={4}>
+          <SummaryCard
+            title="Top Allocation"
+            value={Object.keys(data.assetAllocation ?? {})[0] ?? 'N/A'}
+            subtitle="Largest asset category"
           />
         </Grid>
 
