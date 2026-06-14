@@ -37,6 +37,10 @@ export default function AddExpenseDialog({ open, onClose, onSave }) {
     handleClose()
   }
 
+  const getToday = () => {
+  return new Date().toISOString().split("T")[0];
+  };
+
   return (
     <Dialog open={open} onClose={handleClose} fullWidth maxWidth="sm">
       <DialogTitle>Add Expense</DialogTitle>
@@ -47,10 +51,10 @@ export default function AddExpenseDialog({ open, onClose, onSave }) {
             name="date"
             label="Date"
             type="date"
+            value={form.date || getToday()}
             fullWidth
             InputLabelProps={{ shrink: true }}
             onChange={handleChange}
-            value={form.date}
           />
 
           <TextField

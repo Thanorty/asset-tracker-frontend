@@ -15,7 +15,7 @@ import { useEffect, useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { fetchCoinList, searchStocks } from '../api/pricingApi'
 
-const assetTypes = ['CRYPTO', 'STOCK', 'GOLD']
+const assetTypes = ['CRYPTO', 'STOCK', 'GOLD', 'MIGA']
 
 const initialAsset = {
   name: '',
@@ -31,7 +31,10 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
   const [loadingOptions, setLoadingOptions] = useState(false)
   const [searchInput, setSearchInput] = useState('')
 
-  const isInvalid = !asset.name || !asset.quantity || Number(asset.quantity) <= 0
+  const isInvalid =
+    (asset.type !== 'GOLD' && asset.type !== 'MIGA') && !asset.name
+      ? true
+      : !asset.quantity || Number(asset.quantity) <= 0
 
   // Load crypto coin list when type is CRYPTO
   useEffect(() => {
@@ -109,8 +112,12 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
 
     // For gold, set defaults
     if (asset.type === 'GOLD') {
-      payload.name = 'Maybank Gold'
+      payload.name = 'Gold'
       payload.symbol = 'GOLD'
+      payload.externalId = 'gold'
+    } else if (asset.type === 'MIGA') {
+       payload.name = 'Maybank Gold'
+      payload.symbol = 'MIGA'
       payload.externalId = 'maybank-gold'
     }
 
@@ -148,6 +155,10 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
 
           {asset.type === 'GOLD' ? (
             <Typography variant="body2" color="text.secondary">
+              Gold — price updated automatically (MYR/gram)
+            </Typography>
+          ) : asset.type === 'MIGA' ? (
+            <Typography variant="body2" color="text.secondary">
               Maybank Gold — price updated automatically (MYR/gram)
             </Typography>
           ) : (
@@ -161,6 +172,11 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
                 (option.id || option.symbol) === (value.id || value.symbol)
               }
               filterOptions={asset.type === 'STOCK' ? (x) => x : undefined}
+              noOptionsText={
+                asset.type === 'STOCK' && searchInput.length < 2
+                  ? 'Type at least 2 characters to search'
+                  : 'No options found'
+              }
               renderInput={(params) => (
                 <TextField
                   {...params}
@@ -199,7 +215,7 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
           )}
 
           <TextField
-            label={asset.type === 'GOLD' ? 'Quantity (grams)' : 'Quantity'}
+            label={asset.type in ['GOLD', 'MIGA'] ? 'Quantity (grams)' : 'Quantity'}
             name="quantity"
             type="number"
             fullWidth

@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || 'https://asset-tracker-backend-production.up.railway.app/api',
+  baseURL: 'http://localhost:8081',
 })
 
 apiClient.interceptors.request.use((config) => {

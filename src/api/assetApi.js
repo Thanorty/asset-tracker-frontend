@@ -1,13 +1,13 @@
 import apiClient from './apiClient'
 
 export const fetchAssets = () => {
-  return apiClient.get('/assets')
+  return apiClient.get('/api/assets')
 }
 
 export const createAsset = (asset) => {
-  return apiClient.post('/assets', asset)
+  return apiClient.post('/api/assets', asset)
 }
 
 export const deleteAsset = (id) => {
-  return apiClient.delete(`/assets/${id}`)
+  return apiClient.delete(`/api/assets/${id}`)
 }

@@ -20,7 +20,7 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuth()
   const navigate = useNavigate()
   const location = useLocation()
-  const [form, setForm] = useState({ email: '', password: '' })
+  const [form, setForm] = useState({ username: '', password: '' })
   const [error, setError] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
 
@@ -88,10 +88,10 @@ export default function LoginPage() {
             {error && <Alert severity="error">{error}</Alert>}
 
             <TextField
-              label="Email"
-              name="email"
-              type="email"
-              value={form.email}
+              label="Username"
+              name="username"
+              type="text"
+              value={form.username}
               onChange={handleChange}
               required
               autoFocus

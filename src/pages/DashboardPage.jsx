@@ -44,7 +44,7 @@ export default function DashboardPage() {
         <Grid item xs={12} md={4}>
           <SummaryCard
             title="Total Portfolio Value"
-            value={`$${data.totalPortfolioValue.toLocaleString()}`}
+            value={`RM${data.totalPortfolioValue.toLocaleString()}`}
             subtitle="Across all tracked assets"
             positive
           />
@@ -53,7 +53,7 @@ export default function DashboardPage() {
         <Grid item xs={12} md={4}>
           <SummaryCard
             title="Monthly Expenses"
-            value={`$${(data.monthlyExpenses ?? 0).toFixed(2)}`}
+            value={`RM${(data.monthlyExpenses ?? 0).toFixed(2)}`}
             positive={false}
             subtitle="Current month burn rate"
           />
