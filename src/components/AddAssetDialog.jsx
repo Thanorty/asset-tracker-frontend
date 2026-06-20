@@ -23,6 +23,7 @@ const initialAsset = {
   symbol: '',
   externalId: '',
   quantity: '',
+  buyPrice: '',
 }
 
 export default function AddAssetDialog({ open, onClose, onSave }) {
@@ -39,7 +40,6 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
   // Load crypto coin list when type is CRYPTO
   useEffect(() => {
     if (asset.type === 'CRYPTO' && open) {
-      setLoadingOptions(true)
       fetchCoinList()
         .then((res) => setOptions(res.data || []))
         .catch(() => setOptions([]))
@@ -107,6 +107,7 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
       type: asset.type,
       symbol: asset.symbol,
       externalId: asset.externalId,
+      buyPrice: Number(asset.buyPrice),
       quantity: Number(asset.quantity),
     }
 
@@ -221,6 +222,14 @@ export default function AddAssetDialog({ open, onClose, onSave }) {
             fullWidth
             onChange={(e) => setAsset({ ...asset, quantity: e.target.value })}
             value={asset.quantity}
+          />
+          <TextField
+            label="Buy Price"
+            name="buyPrice"
+            type="number"
+            fullWidth
+            onChange={(e) => setAsset({ ...asset, buyPrice: e.target.value })}
+            value={asset.buyPrice}
           />
         </Stack>
       </DialogContent>

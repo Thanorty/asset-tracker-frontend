@@ -40,7 +40,9 @@ const headCells = [
   { id: 'type', label: 'Type' },
   { id: 'quantity', label: 'Quantity', numeric: true },
   { id: 'unitPrice', label: 'Unit Price', numeric: true },
+  { id: 'buyPrice', label: 'Buy Price', numeric: true },
   { id: 'currentValue', label: 'Total Value', numeric: true },
+  { id: 'plVal', label: 'Profit/Loss' },
   { id: 'lastPriceUpdate', label: 'Updated', numeric: false },
 ]
 
@@ -137,8 +139,16 @@ export default function PortfolioTable({ assets, onDelete }) {
                   <TableCell align="right">
                     {formatCurrency(asset.unitPrice, asset.currency)}
                   </TableCell>
+                  <TableCell align="right">
+                    {formatCurrency(asset.buyPrice, asset.currency)}
+                  </TableCell>
                   <TableCell align="right" sx={{ fontWeight: 700 }}>
                     {formatCurrency(asset.currentValue, asset.currency)}
+                  </TableCell>
+                  <TableCell align="right" sx={{ fontWeight: 700 }}>
+                    {asset.buyPrice != null && asset.unitPrice != null
+                      ? ((asset.unitPrice/asset.buyPrice) * 100).toFixed(2) + '%'
+                      : '—'}
                   </TableCell>
                   <TableCell>
                     <Typography variant="caption" color="text.secondary">
