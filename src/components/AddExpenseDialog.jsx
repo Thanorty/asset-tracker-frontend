@@ -7,6 +7,8 @@ import {
   Stack,
   TextField,
   MenuItem,
+  FormControlLabel,
+  Checkbox,
 } from '@mui/material'
 import { useState } from 'react'
 import PropTypes from 'prop-types'
@@ -17,6 +19,8 @@ const initialForm = {
   category: '',
   description: '',
   amount: '',
+  recurringExpense: false,
+  endDate: '',
 }
 
 export default function AddExpenseDialog({ open, onClose, onSave }) {
@@ -88,6 +92,28 @@ export default function AddExpenseDialog({ open, onClose, onSave }) {
             onChange={handleChange}
             value={form.amount}
           />
+
+          <FormControlLabel
+            control={
+              <Checkbox
+                checked={form.recurringExpense}
+                onChange={(e) => setForm({ ...form, recurringExpense: e.target.checked, endDate: '' })}
+              />
+            }
+            label="Recurring Expense"
+          />
+
+          {form.recurringExpense && (
+            <TextField
+              name="endDate"
+              label="End Date"
+              type="date"
+              value={form.endDate}
+              fullWidth
+              InputLabelProps={{ shrink: true }}
+              onChange={handleChange}
+            />
+          )}
         </Stack>
       </DialogContent>
 

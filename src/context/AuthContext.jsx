@@ -7,10 +7,10 @@ function normalizeLoginPayload(payload) {
     return { token: null, user: null }
   }
 
-  return {
-    token: payload.token ?? payload.accessToken ?? null,
-    user: payload.user ?? null,
-  }
+  const token = payload.token ?? payload.accessToken ?? null
+  const user = payload.user ?? (payload.username ? { username: payload.username, role: payload.role } : null)
+
+  return { token, user }
 }
 
 function isTokenExpired(token) {

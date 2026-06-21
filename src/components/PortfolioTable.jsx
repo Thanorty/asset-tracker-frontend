@@ -147,7 +147,18 @@ export default function PortfolioTable({ assets, onDelete }) {
                   </TableCell>
                   <TableCell align="right" sx={{ fontWeight: 700 }}>
                     {asset.buyPrice != null && asset.unitPrice != null
-                      ? ((asset.unitPrice/asset.buyPrice) * 100).toFixed(2) + '%'
+                      ? (() => {
+                          const plPercent = ((asset.unitPrice - asset.buyPrice) / asset.buyPrice) * 100
+                          const isProfit = plPercent >= 0
+                          return (
+                            <Typography
+                              variant="body2"
+                              sx={{ fontWeight: 700, color: isProfit ? 'success.main' : 'error.main' }}
+                            >
+                              {isProfit ? '+' : ''}{plPercent.toFixed(2)}%
+                            </Typography>
+                          )
+                        })()
                       : '—'}
                   </TableCell>
                   <TableCell>

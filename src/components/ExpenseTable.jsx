@@ -34,14 +34,20 @@ function getComparator(order, orderBy) {
     : (a, b) => -descendingComparator(a, b, orderBy)
 }
 
-const headCells = [
+const baseHeadCells = [
   { id: 'date', label: 'Date' },
   { id: 'category', label: 'Category' },
   { id: 'description', label: 'Description' },
   { id: 'amount', label: 'Amount (RM)', numeric: true },
 ]
 
-export default function ExpenseTable({ expenses, onDelete }) {
+const recurringHeadCells = [
+  ...baseHeadCells,
+  { id: 'endDate', label: 'End Date' },
+]
+
+export default function ExpenseTable({ expenses, onDelete, showRecurring = false }) {
+  const headCells = showRecurring ? recurringHeadCells : baseHeadCells
   const [order, setOrder] = useState('desc')
   const [orderBy, setOrderBy] = useState('date')
   const [page, setPage] = useState(0)
@@ -112,6 +118,9 @@ export default function ExpenseTable({ expenses, onDelete }) {
                   <TableCell align="right" sx={{ color: 'error.main', fontWeight: 700 }}>
                     {(expense.amount ?? 0).toFixed(2)}
                   </TableCell>
+                  {showRecurring && (
+                    <TableCell>{expense.endDate || '—'}</TableCell>
+                  )}
                   {onDelete && (
                     <TableCell align="center">
                       <Tooltip title="Delete">
@@ -149,4 +158,5 @@ export default function ExpenseTable({ expenses, onDelete }) {
 ExpenseTable.propTypes = {
   expenses: PropTypes.array.isRequired,
   onDelete: PropTypes.func,
+  showRecurring: PropTypes.bool,
 }

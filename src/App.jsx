@@ -10,6 +10,8 @@ const SignUpPage = lazy(() => import('./pages/SignUpPage'))
 const DashboardPage = lazy(() => import('./pages/DashboardPage'))
 const PortfolioPage = lazy(() => import('./pages/PortfolioPage'))
 const ExpensesPage = lazy(() => import('./pages/ExpensesPage'))
+const SalaryPage = lazy(() => import('./pages/SalaryPage'))
+const UserManagementPage = lazy(() => import('./pages/UserManagementPage'))
 
 function PageLoader() {
   return (
@@ -32,6 +34,8 @@ export default function App() {
               <Route path="/" element={<DashboardPage />} />
               <Route path="/portfolio" element={<PortfolioPage />} />
               <Route path="/expenses" element={<ExpensesPage />} />
+              <Route path="/salary" element={<SalaryPage />} />
+              <Route path="/admin/users" element={<UserManagementPage />} />
             </Route>
           </Route>
 
