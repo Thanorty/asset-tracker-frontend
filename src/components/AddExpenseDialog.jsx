@@ -13,7 +13,7 @@ import {
 import { useState } from 'react'
 import PropTypes from 'prop-types'
 
-const categories = ['Food', 'Transport', 'Subscriptions', 'Housing', 'Utilities']
+const categories = ['Food', 'Transport', 'Subscriptions', 'Housing', 'Utilities', 'Insurance']
 const initialForm = {
   date: '',
   category: '',
